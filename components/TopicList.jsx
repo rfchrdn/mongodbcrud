@@ -8,28 +8,28 @@ const getTopics = async () => {
             cache: "no-store",
         });
 
-        if(!res.ok){
+        if (!res.ok) {
             throw new Error("Failed to fetch topics");
         }
         return res.json();
     } catch (error) {
         console.log("Error fetching topics:", error);
+        return { topics: [] };  // Return an empty array if there is an error
     }
 }
 
-export default async function TopicList(){
-
-    const { topics } = await getTopics();
+export default async function TopicList() {
+    const { topics } = await getTopics() || { topics: [] };  // Handle case where getTopics returns undefined
     return (
         <>
             {topics.map(t => (
-                <div className="p-4 border border-slate-300 my-3 flex justify-between gap-5 item-start">
+                <div key={t._id} className="p-4 border border-slate-300 my-3 flex justify-between gap-5 item-start">
                     <div>
                         <h2 className="text-2xl font-bold">{t.title}</h2>
                         <div>{t.description}</div>
                     </div>
                     <div className="flex gap-2">
-                        <RemoveBin id={t._id}/>
+                        <RemoveBin id={t._id} />
                         <Link href={`/editTopic/${t._id}`}>
                             <HiPencilAlt size={24} />
                         </Link>
